@@ -64,7 +64,7 @@ void getUserGuess(string userGuess[], int codeLength){
 }
 
 //Function to provide feedback on the user's guess
-void feedback(const string code[], const string userGuess[], int codeLength)
+void feedback(const string code[], const string userGuess[], int codeLength){
   int correctPosition = 0;
   int correctColor = 0;
   for (int i = 0; i < codeLength; i++) {
@@ -74,7 +74,7 @@ void feedback(const string code[], const string userGuess[], int codeLength)
   }
   for (int i = 0; i < codeLength; i++) {
     for (int j = 0; j < codeLength; j++) {
-      if (userGuess[o] == code[j] && i != j) {
+      if (userGuess[i] == code[j] && i != j) {
         correctColor++;
       }
     }
