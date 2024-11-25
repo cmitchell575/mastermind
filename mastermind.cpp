@@ -4,81 +4,77 @@
 #include <ctime>
 using namespace std;
 
-//Functions
-void generateCode (string code[], int codeLength);
-void getUserGuess (string userGuess[], int codeLength);
-void feedback (const string code[], const string userGuess[], int codeLength);
+// Function to check user's correct position
+int checkUserPosition(string code[], string userGuess[]) {
+    int correctPosition = 0; // Local variable to count correct positions
+    for (int i = 0; i < 4; i++) {
+        if (userGuess[i] == code[i]) {
+            correctPosition++;
+        }
+    }
+    return correctPosition; // Return the count of correct positions
+}
+
+// Function to check user's correct color
+int checkUserColor(string code[], string userGuess[]) {
+    int correctColor = 0; // Local variable to count correct colors
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (userGuess[i] == code[j] && i != j) {
+                correctColor++;
+            }
+        }
+    }
+    return correctColor; // Return the count of correct colors
+}
 
 int main() {
-  const int codeLength = 4; // Length of the code
-  const int maxAttempts = 10; // Max # of attempts
-  string code[codeLength]; // Array to hold the code
-  string userGuess[codeLength]; // Array to hold the user's guess
-  int attempts = 0; // Variable to count the number of attempts
+    // CONST SETUP
+    const int codeLength = 4;
+    const int maxAttempts = 10;
 
-// Seed the random generator
-srand(static_cast<unsigned int>(time(0)));
+    // ARRAY SETUP
+    string colors[] = {"Red", "Green", "Blue", "Yellow", "Orange", "Purple"};
+    string code[codeLength];
+    string userGuess[codeLength];
 
-// Generate the code
-generateCode(code, codeLength);
-cout << "Welcome to Mastermind!\n";
-cout << "Try to guess the secret code consisting of " << codeLength << " colors.\n";
-cout << "Available colors: Red, Green, Blue, yellow, Orange, Purple\n";
+    // VARIABLE SETUP
+    int attempts = 0;
 
-//Main game loop
-while (attempts < maxAttempts){
-  //Get the user's guess
-  getUserGuess(userGuess, codeLength);
-  attempts++;
-  //Provide feedback on the user's guess
-  feedback (code, userGuess, codeLength);
-  //Check if the user has guessed the code correctly
-  if (userGuess[0] == code[0] && userGuess[1] == code[1] && userGuess[2] == code[2] && userGuess[3] == code[3]) {
-    cout << "Congratulations! You've guessed the secret code!\n";
-    break;
-  } else if (attempts == maxAttempts){
-    cout << "Sorry, you've used all your attempts. The secret code was: ";
+    // SEEDING RNG
+    srand(static_cast<unsigned int>(time(0)));
+
+    // GENERATE INITIAL CODE
     for (int i = 0; i < codeLength; i++) {
-      cout << code[i] << " ";
+        code[i] = colors[rand() % 6];
     }
-    cout << "\n";
-  }
-}
-return 0;
-}
+     //INTRO TO GAME
+    cout << "This is the game of Mastermind! The Computer has generated a code made up of 4 colors out of 6 available colors!\n" "You have 10 guesses to guess the correct color.\n" "The available colors are Red, Green, Blue, Yellow, Orange, and Purple.\n" "Enter your guess:";
 
-//Function to generate a random code
-void generateCode(string code[], int codeLength) {
-  string colors[] = {"Red", "Green", "Blue", "Yellow", "Orange", "Purple"};
-  for (int i=0; i < codeLength; i++) {
-    code[i] = colors[rand() % 6]; // Randomly select a color
-  }
-}
+    // START GAME
+    while (attempts < maxAttempts) {
+   
+        // USER GUESS
+        for (int i = 0; i < codeLength; i++) {
+            cin >> userGuess[i];
+        }
+        attempts++;
 
-//Function to get the user's guess
-void getUserGuess(string userGuess[], int codeLength){
-  cout << "Enter your guess (4 colors): ";
-  for (int i = 0; i < codeLength; i++) {
-      cin >> userGuess[i]; //Store the user's guess
-  }
-}
+        // CHECK POSITION AND COLOR OF GUESS
+        int correctPosition = checkUserPosition(code, userGuess);
+        int correctColor = checkUserColor(code, userGuess);
 
-//Function to provide feedback on the user's guess
-void feedback(const string code[], const string userGuess[], int codeLength){
-  int correctPosition = 0;
-  int correctColor = 0;
-  for (int i = 0; i < codeLength; i++) {
-    if (userGuess[i] == code[i]) {
-        correctPosition++;
+        // CHECK FOR WIN CONDITION
+        if (correctPosition == codeLength) {
+            cout << "Congratulations! You have guessed the correct color code! You are a Mastermind!" << endl;
+        } else {
+            cout << "Feedback: " << correctPosition << " correct colors in the correct position, "
+                 << correctColor << " correct colors in the wrong position.\n";
+        }
     }
-  }
-  for (int i = 0; i < codeLength; i++) {
-    for (int j = 0; j < codeLength; j++) {
-      if (userGuess[i] == code[j] && i != j) {
-        correctColor++;
-      }
+
+    // Check if max attempts reached
+    if (attempts >= maxAttempts) {
+        cout << "Sorry, you have reached the max attempts, game over! Try again!" << endl;
     }
-  }
-//Provide the feedback to the user
-cout << "Feedback: " << correctPosition << " correct colors in the correct position, " << correctColor << " correct colors in the wrong position.\n";
 }
